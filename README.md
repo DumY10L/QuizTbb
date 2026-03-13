@@ -207,7 +207,6 @@ Result.Font = Enum.Font.GothamBold
 Result.TextXAlignment = Enum.TextXAlignment.Center
 Result.TextWrapped = true
 
--- Notificação canto superior direito
 local Notif = Instance.new("Frame", ScreenGui)
 Notif.Size = UDim2.new(0, 220, 0, 44)
 Notif.Position = UDim2.new(1, 10, 0, 16)
@@ -223,7 +222,7 @@ local NotifLabel = Instance.new("TextLabel", Notif)
 NotifLabel.Size = UDim2.new(1, -16, 1, 0)
 NotifLabel.Position = UDim2.new(0, 12, 0, 0)
 NotifLabel.BackgroundTransparency = 1
-NotifLabel.Text = "Resposta:  —"
+NotifLabel.Text = "Answer:  —"
 NotifLabel.TextColor3 = Color3.fromRGB(100, 255, 100)
 NotifLabel.TextSize = 14
 NotifLabel.Font = Enum.Font.GothamBold
@@ -231,7 +230,7 @@ NotifLabel.TextXAlignment = Enum.TextXAlignment.Left
 NotifLabel.ZIndex = 11
 
 local function showNotif(answerName)
-    NotifLabel.Text = "Resposta:  " .. answerName
+    NotifLabel.Text = "Answer:  " .. answerName
     TweenService:Create(Notif, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
         Position = UDim2.new(1, -230, 0, 16)
     }):Play()
@@ -263,17 +262,13 @@ local fullHeight = 220
 local function processQuiz(gui)
     task.spawn(function()
         task.wait(2.5)
-
         local hourMap = buildImageMap(sprites.Hour)
         local minuteMap = buildImageMap(sprites.Minute)
-
         local parentFrame = gui.Frame:FindFirstChild("Question") or gui.Frame:FindFirstChild("QuestionTroll")
         if not parentFrame then return end
-
         local totalMinute = 0
         local firstHour = nil
         local clockCount = 0
-
         for _, obj in ipairs(parentFrame:GetChildren()) do
             if obj.Name == "Clock" then
                 local hourImg = obj:FindFirstChild("Hour")
@@ -289,14 +284,10 @@ local function processQuiz(gui)
                 end
             end
         end
-
         if clockCount == 0 then return end
-
         totalMinute = totalMinute % 12
-
         local choices = gui.Frame.Choices
         local correctBtn = nil
-
         for _, btn in ipairs(choices:GetChildren()) do
             if btn:IsA("ImageButton") then
                 local btnHour = btn:FindFirstChild("Hour")
@@ -318,7 +309,6 @@ local function processQuiz(gui)
                 end
             end
         end
-
         if correctBtn then
             if minimized then
                 showNotif(correctBtn.Name)
