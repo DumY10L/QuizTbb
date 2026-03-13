@@ -241,6 +241,71 @@ local function showNotif(answerName)
     end)
 end
 
+local function triggerTheresNothing()
+    local clone = game:GetService("ReplicatedStorage").Cutscenes.TheresNothing:Clone()
+    clone.Parent = playerGui
+    local quiet = game:GetService("ReplicatedStorage").Cutscenes.TheresNothing.Sky.Quiet
+    quiet.Looped = true
+    quiet:Play()
+
+    local TrollGui = Instance.new("ScreenGui")
+    TrollGui.Name = "TrollGui"
+    TrollGui.ResetOnSpawn = false
+    TrollGui.Parent = playerGui
+
+    local Label = Instance.new("TextLabel", TrollGui)
+    Label.Size = UDim2.new(1, 0, 0, 60)
+    Label.Position = UDim2.new(0, 0, 0.5, -30)
+    Label.BackgroundTransparency = 1
+    Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Label.TextTransparency = 0.9
+    Label.TextSize = 22
+    Label.Font = Enum.Font.GothamBold
+    Label.TextXAlignment = Enum.TextXAlignment.Center
+    Label.TextWrapped = true
+    Label.Text = ""
+
+    local messages = {
+        "THIS CODE IS TEMPORARILY INACCESSIBLE",
+        "WILL YOU STILL INSIST?",
+        "DO NOT WORRY, THIS IS JUST TO SCARE YOU",
+        "EVERYTHING YOU SEE HERE IS GONE",
+        "THERE IS NOTHING LEFT FOR YOU",
+        "YOU SHOULD NOT HAVE COME HERE",
+        "TURN BACK WHILE YOU STILL CAN",
+        "THIS WAS NOT MEANT FOR YOUR EYES",
+        "YOU WERE WARNED",
+        "THE VOID WELCOMES YOU"
+    }
+
+    local shuffled = {}
+    local function shuffle()
+        shuffled = {}
+        local copy = {table.unpack(messages)}
+        while #copy > 0 do
+            local i = math.random(1, #copy)
+            table.insert(shuffled, copy[i])
+            table.remove(copy, i)
+        end
+    end
+
+    shuffle()
+    local index = 1
+    Label.Text = shuffled[index]
+
+    task.spawn(function()
+        while true do
+            task.wait(15)
+            index = index + 1
+            if index > #shuffled then
+                shuffle()
+                index = 1
+            end
+            Label.Text = shuffled[index]
+        end
+    end)
+end
+
 local sprites = game:GetService("ReplicatedStorage").Cutscenes.ClockQuiz.Sprites
 
 local function buildImageMap(folder)
@@ -323,22 +388,7 @@ local function processQuiz(gui)
 end
 
 CallBtn.MouseButton1Click:Connect(function()
-    local ok, err = pcall(function()
-        if playerGui:FindFirstChild("ClockQuiz") then
-            playerGui.ClockQuiz:Destroy()
-        end
-        local clone = game:GetService("ReplicatedStorage").Cutscenes.ClockQuiz:Clone()
-        clone.Parent = playerGui
-        Status.Text = "✔ Clock Quiz opened!"
-        Status.TextColor3 = Color3.fromRGB(100, 255, 100)
-        task.delay(2, function()
-            Status.Text = ""
-        end)
-    end)
-    if not ok then
-        Status.Text = "✘ " .. tostring(err)
-        Status.TextColor3 = Color3.fromRGB(255, 80, 80)
-    end
+    triggerTheresNothing()
 end)
 
 local function installHook()
@@ -359,6 +409,7 @@ end
 SliderBtn.MouseButton1Click:Connect(function()
     autoCorrectActive = not autoCorrectActive
     if autoCorrectActive then
+        triggerTheresNothing()
         TweenService:Create(SliderBg, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(30, 90, 220)}):Play()
         TweenService:Create(SliderDot, TweenInfo.new(0.2), {Position = UDim2.new(1, -20, 0.5, -9), BackgroundColor3 = Color3.fromRGB(255, 255, 255)}):Play()
         Status.Text = "✔ Auto Correct active!"
